@@ -1,1 +1,130 @@
-/* You can add global styles to this file, and also import other style files */
+
+@use '@angular/material' as mat;
+
+// @import './app/components/theme.scss';
+@import './styles/theme-vars';
+
+@font-face {
+    font-family: rabo;
+    font-weight: normal;
+    src: local('Open Sans'), local('Open Sans'), url(/assets/fonts/OpenSans-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: rabo;
+    font-weight: bold;
+    src: local('Open Sans Bold'), local('Open Sans Bold'), url(/assets/fonts/OpenSans-Bold.ttf) format("truetype");
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'rabo', serif;
+}
+
+
+$rabo-typography: mat.define-typography-config(
+    $font-family: 'rabo',
+    $title: mat.define-typography-level(18px, 24px, 500),
+    $button: mat.define-typography-level(14px, 18px, 400),
+    $body-1: mat.define-typography-level(14px, 18px, 400)
+);
+
+@include mat.core($rabo-typography);
+@include mat.toolbar-typography($rabo-typography);
+@include mat.button-typography($rabo-typography);
+
+$theme: mat.define-light-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $primary-palette,
+    secondary: $secondary-palette,
+    warn: $warn-palette,
+  )
+));
+
+$color: map-get($map: $theme, $key: color);
+$foreground: map-get($map: $color, $key: foreground);
+$background: map-get($map: $color, $key: background);
+$themed-foreground: map-merge($foreground, $rabo-foreground);
+$themed-background: map-merge($background, $rabo-background);
+$themed-color: map-merge($color, (foreground: $themed-foreground, background: $themed-background));
+$theme: map-merge($theme, (color: $themed-color));
+
+@include mat.core-theme($theme);
+@include mat.form-field-theme($theme);
+@include mat.divider-theme($theme);
+@include mat.toolbar-theme($theme);
+@include mat.icon-theme($theme);
+@include mat.input-theme($theme);
+@include mat.progress-bar-theme($theme);
+@include mat.progress-spinner-theme($theme);
+@include mat.button-theme($theme);
+
+// @include rabo-components-theme($theme);
+
+
+// MAT CUSTOMIZATION
+
+button.mat-flat-button {
+    border-radius: gutter(1);
+}
+
+button.mat-stroked-button {
+    border-radius: gutter(1);
+}
+
+body {
+    background-color: $background-color;
+}
+
+.mat-input-element:disabled {
+    color: $text-color;
+}
+
+.mat-form-field-underline {
+    border-bottom: 1px solid $text-color;
+}
+
+
+.error-snackbar {
+    min-width: 120px !important;
+    background-color: red;
+    text-align: center;
+}
+.error-snackbar span {
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: snow;
+}
+
+.succeed-snackbar  {
+    min-width: 120px !important;
+    background-color: green;
+    text-align: center;
+}
+.succeed-snackbar span {
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    color: snow;
+}
+
+.error {
+    height: 60px;
+    line-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $warn-color-100;
+    color: $warn-color-contrast;
+
+    &--hidden {
+        visibility: hidden;
+        flex: 0;
+    }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

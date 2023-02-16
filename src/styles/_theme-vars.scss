@@ -1,0 +1,57 @@
+@use '@angular/material' as mat;
+
+$primary: (500: #df5435, 100: #f8613e, 700: #df5435, contrast: (100: #fff, 500: #fff));
+$secondary: (500: #E9EAE9, 100: #E9EAE9, 700: #969796, contrast: (100: #df5435, 500: #df5435));
+$warn: (100: #ff0000, 500: #ff0000, 700: #ff0000, contrast: (100: #fff, 500: #fff));
+
+$primary-palette: mat.define-palette($primary);
+$secondary-palette: mat.define-palette($secondary);
+$warn-palette: mat.define-palette($warn);
+
+$primary-color: mat.get-color-from-palette($primary-palette);
+$primary-color-contrast: mat.get-color-from-palette($primary-palette, default-contrast);
+
+$warn-color: mat.get-color-from-palette($warn-palette);
+$warn-color-contrast: mat.get-color-from-palette($warn-palette, default-contrast);
+$warn-color-100: mat.get-color-from-palette($warn-palette, 100);
+
+$text-color: #1A1919;
+$divider-color: #cecece;
+$disabled-text-color: #9E9F9E;
+$background-color: #F7F7F7;
+$card-background: #FFF;
+$status-bar-background: #E9EAE9;
+
+@function rabo-foreground($color) {
+    @return (
+      base:              $color,
+      divider:           $divider-color,
+      dividers:          rgba($color, 0.28),
+      disabled:          rgba($color, 0.38),
+      disabled-button:   rgba($color, 0.38),
+      disabled-text:     $disabled-text-color,
+      hint-text:         rgba($color, 0.38),
+      secondary-text:    rgba($color, 0.54),
+      icon:              rgba($color, 0.54),
+      icons:             rgba($color, 0.54),
+      text:              $text-color,
+      slider-off:        rgba($color, 0.26),
+      slider-off-active: rgba($color, 0.38),
+      slider-min:        rgba($color, 0.38)
+    );
+}
+
+  
+$rabo-foreground: rabo-foreground(#1a1919);
+
+$rabo-background: (
+    status-bar:               $status-bar-background,
+    app-bar:                  $background-color,
+    background:               $background-color,
+    hover:                    rgba(#000, 0.04),
+    card:                     $card-background,
+    dialog:                   $background-color,
+    disabled-button:          rgba(#000, 0.12),
+    raised-button:            $background-color,
+    focused-button:           rgba(#000, 0.06),
+);
