@@ -1,24 +1,29 @@
 
 import { Injectable } from '@angular/core';
 import { RaboReferenceModel } from '@rabo/model';
-import { RaboValidationResult, RaboValidator, RaboValidatorPlugin } from './validator.plugin';
+import { RaboValidationErrors, RaboValidator, RaboValidatorPlugin } from './validator.plugin';
 
 @Injectable()
 export class RaboReferenceValidatorPlugin implements RaboValidatorPlugin {
     getValidator() {
         return new RaboReferenceValidator();
     }
+
+    isRecordValidator() {
+        return false;
+    }
 }
 
 export class RaboReferenceValidator implements RaboValidator {
     private readonly ids = new Set<number>;
 
-    validateRecord(value: RaboReferenceModel): RaboValidationResult | null {
+    validateRecord(value: RaboReferenceModel, index: number): RaboValidationErrors | null {
+        const errorKey = `reference_${index}`;
         if (typeof value.reference!== 'number' || value.reference <= 0) {
-            return [`Invalid reference format`];
+            return {errorKey: `Invalid reference format ${value.reference}`}
         }
         if (this.ids.has(value.reference)) {
-            return [`Duplicate transaction reference`];
+            return {errorKey: `Duplicate transaction reference ${value.reference}`}
         }
         this.ids.add(value.reference);
         return null;
