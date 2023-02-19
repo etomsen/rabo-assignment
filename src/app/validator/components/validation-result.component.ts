@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { RaboReferenceModel, RaboStatementModel } from '@rabo/model';
 import { RaboError } from '@rabo/utils/error';
 import { ngIfLoadingSymbol } from '@rabo/utils/ng-if.directive';
-import { RaboStatementValidatorService } from '../validator.service';
+import { RaboStatementValidatorService } from '../services/validator.service';
 
 type RaboValidationComponentState = RaboStatementModel[] | RaboError | typeof ngIfLoadingSymbol;
 

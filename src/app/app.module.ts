@@ -13,7 +13,7 @@ import { RaboValidatorModule } from './validator/validator.module';
     imports: [
         BrowserModule,
         NoopAnimationsModule,
-        RaboValidatorModule.forRoot(),
+        RaboValidatorModule,
         RaboUtilsModule
     ],
     providers: [],

@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { Observable } from 'rxjs';
 import { RaboStatementModel } from './model';
 import { RaboStatementFileParserService } from './parser';
 import { fromError, RaboError } from './utils/error';
