@@ -1,2 +1,16 @@
 <h1>Rabo Statement Check</h1>
 <input type='file' (change)="onFileChanged($event)">
+<ng-container *ngIf="state; then dataTpl or loadingTpl but errorTpl">
+</ng-container>
+
+<ng-template #dataTpl let-statement>
+    <rabo-validation-result [statement]="statement"></rabo-validation-result>
+</ng-template>
+
+<ng-template #loadingTpl>
+    Loading file...    
+</ng-template>
+
+<ng-template #errorTpl let-error>
+    {{error.raboMsg}}
+</ng-template>

@@ -1,0 +1,41 @@
+<ng-container *ngIf="state; then dataTpl or loadingTpl but errorTpl"></ng-container>
+
+<ng-template #errorTpl let-error>
+    {{error.raboMsg}}
+</ng-template>
+
+<ng-template #loadingTpl>
+    Validating statement data...
+</ng-template>
+
+<ng-template #dataTpl>
+    Validation done!
+</ng-template>
+
+    
+<!-- <mat-table *ngIf="dataSource.data.length else noDataTpl" [dataSource]="dataSource" multiTemplateDataRows>
+    <ng-container matColumnDef="reference">
+        <mat-header-cell *matHeaderCellDef>
+            Reference
+        </mat-header-cell>
+        <mat-cell *matCellDef="let result">{{ result.reference}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="errors">
+        <mat-header-cell *matHeaderCellDef>
+            <mat-icon svgIcon="error"></mat-icon>
+            Errors
+        </mat-header-cell>
+        <mat-cell *matCellDef="let result">
+            {{result.errors}}
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    <mat-row *matRowDef="let result; columns: columns; let i = index">
+    </mat-row>
+</mat-table> -->
+
+<ng-template #noDataTpl>
+    <div class="empty">
+        All records in statement are correct!
+    </div>
+</ng-template>

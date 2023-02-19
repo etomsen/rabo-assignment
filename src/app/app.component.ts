@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { Observable } from 'rxjs';
+import { RaboStatementModel } from './model';
 import { RaboStatementFileParserService } from './parser';
-import { fromError } from './utils/error';
+import { fromError, RaboError } from './utils/error';
+import { ngIfLoadingSymbol } from './utils/ng-if.directive';
+
+type AppComponentState = RaboStatementModel[] | RaboError | typeof ngIfLoadingSymbol;
 
 @Component({
     selector: 'app-root',
@@ -9,22 +15,27 @@ import { fromError } from './utils/error';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-    constructor(private parserSvc: RaboStatementFileParserService) {}
+    state?: AppComponentState;
+    constructor(
+        private parserSvc: RaboStatementFileParserService,
+        private cdRef: ChangeDetectorRef,
+    ) {}
 
     async onFileChanged(event: Event): Promise<void> { 
+        this.state = ngIfLoadingSymbol;
         const target = event.target as HTMLInputElement;
         const files = target.files as FileList;
         if (!files.length) {
+            delete this.state;
+            this.cdRef.markForCheck();
             return;
         }
         try {
             const parser = await this.parserSvc.getParser(files[0]);
-            const statement = await parser.parse(files[0]);
+            this.state = await parser.parse(files[0]);
         } catch (error) {
-            const raboErr = fromError(error);
-            alert(raboErr.raboMsg);
+            this.state = fromError(error);
         }
+        this.cdRef.markForCheck();
     }
-
-
 }
