@@ -1,26 +1,28 @@
 import { Injectable, Injector, ProviderToken } from '@angular/core';
 import { RaboStatementParser } from '@rabo/model';
-import type RaboXmlStatementParser from './text-xml-parser.service';            
-import { fromError } from '@rabo/utils/error';
+import { fromError, RaboError } from '@rabo/utils/error';
+import RaboXmlStatementParser from './text-xml-parser.service';
 
 @Injectable({ providedIn: 'root' })
 export class RaboStatementFileParserService {
-    constructor(private injector: Injector) {}
+    static parsersMap = new Map<string, { new(): RaboStatementParser}>;
 
-    private async get<T>(providerLoader: () => Promise<ProviderToken<T>>) {
-        return this.injector.get(await providerLoader());
+    static registerParser(fileType: string, parserClass: { new(): RaboStatementParser}) {
+        RaboStatementFileParserService.parsersMap.set(fileType, parserClass);
     }
 
+    constructor(private injector: Injector) {}
+
     async getParser(file: File): Promise<RaboStatementParser> {
-        // const parserName = file.type.replace('/', '-');
+        if (!RaboStatementFileParserService.parsersMap.has(file.type)) {
+            throw new RaboError('No parser found', `No statement file parser found for type ${file.type}`);
+        }
         try {
-            return await this.get<RaboXmlStatementParser>(() =>
-                // import(`./${parserName}-parser.service`).then((m) => m.default)
-                import('./text-xml-parser.service').then((m) => m.default)
-            );
+            return this.injector.get(RaboStatementFileParserService.parsersMap.get(file.type));
         } catch (error) {
-            debugger;
             throw fromError(error, `No statement file parser found for type ${file.type}`);
         }
     }
 }
+
+RaboStatementFileParserService.registerParser('text/xml', RaboXmlStatementParser);

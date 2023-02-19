@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RaboStatementFileParserService } from './parser';
+import { fromError } from './utils/error';
 
 @Component({
     selector: 'app-root',
@@ -20,7 +21,8 @@ export class AppComponent {
             const parser = await this.parserSvc.getParser(files[0]);
             const statement = await parser.parse(files[0]);
         } catch (error) {
-            debugger;    
+            const raboErr = fromError(error);
+            alert(raboErr.raboMsg);
         }
     }
 
