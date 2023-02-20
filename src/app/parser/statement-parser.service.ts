@@ -1,7 +1,8 @@
 import { Injectable, Injector, ProviderToken } from '@angular/core';
 import { RaboStatementParser } from '@rabo/model';
 import { fromError, RaboError } from '@rabo/utils/error';
-import RaboXmlStatementParser from './text-xml-parser.service';
+import RaboCsvStatementParser from './csv-parser.service';
+import RaboXmlStatementParser from './xml-parser.service';
 
 @Injectable({ providedIn: 'root' })
 export class RaboStatementFileParserService {
@@ -26,3 +27,4 @@ export class RaboStatementFileParserService {
 }
 
 RaboStatementFileParserService.registerParser('text/xml', RaboXmlStatementParser);
+RaboStatementFileParserService.registerParser('text/csv', RaboCsvStatementParser);

@@ -1,19 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RaboBalanceModel, RaboReferenceModel, RaboStatementModel, RaboStatementParser } from '@rabo/model';
 import { fromError, RaboError } from '@rabo/utils/error';
-
-export function readFileToString(file: File) {
-    const reader = new FileReader();
-    return new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-            resolve(reader.result as string);
-        };
-        reader.onerror = (error) => {
-            reject(fromError(error, 'Error parsing XML statement file'));
-        };
-        reader.readAsText(file);
-    });
-}
+import { readFileToString } from './parser-file.utils';
 
 export function parseStatementRecord(record: Element): RaboStatementModel {
     const refModel = parseReferenceRecord(record);
