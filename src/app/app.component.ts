@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { RaboStatementModel } from './model';
-import { RaboStatementFileParserService } from './parser';
+import { RaboStatementFileParserService } from './parser/services';
 import { fromError, RaboError } from './utils/error';
 import { ngIfLoadingSymbol } from './utils/ng-if.directive';
 

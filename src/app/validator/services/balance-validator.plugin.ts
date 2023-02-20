@@ -27,6 +27,10 @@ export class RaboBalanceValidator implements RaboValidator {
     constructor(private readonly config: RaboBalanceValidatorCfg) {}
 
     validateRecord(value: RaboBalanceModel): RaboValidationErrors | null {
+        if (value.start + value.mutation !== value.end) {
+            // to test the config
+            console.log(`${value.start} + ${value.mutation} !== ${value.end}`);
+        }
         if ((value.start + value.mutation).toFixed(this.config.fractionDigits)
             !== (value.end).toFixed(this.config.fractionDigits)
         ) {

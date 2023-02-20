@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RaboUtilsModule } from '@rabo/utils/utils.module';
 import { RaboValidationResultComponent } from './components';
-import { RaboBalanceValidatorPlugin, RaboReferenceValidatorPlugin, RaboStatementValidatorService } from './services';
+import { RaboBalanceValidatorPlugin, RaboReferenceValidatorPlugin, RaboStatementValidatorService, RABO_BALANCE_VALIDATOR_CONFIG } from './services';
 import { RABO_VALIDATOR_PLUGIN_TOKEN } from './services/validator.token';
 
 
@@ -19,19 +19,6 @@ const MaterialModules = [
         ...MaterialModules,
         RaboUtilsModule
     ],
-    providers: [
-        RaboStatementValidatorService,
-        {
-            provide: RABO_VALIDATOR_PLUGIN_TOKEN,
-            useClass: RaboBalanceValidatorPlugin,
-            multi: true,
-        },
-        {
-            provide: RABO_VALIDATOR_PLUGIN_TOKEN,
-            useClass: RaboReferenceValidatorPlugin,
-            multi: true,
-        },
-    ],
     declarations: [
         RaboValidationResultComponent,
     ],
@@ -39,4 +26,27 @@ const MaterialModules = [
         RaboValidationResultComponent
     ]
 })
-export class RaboValidatorModule {}
+export class RaboValidatorModule {
+    static forRoot(fractionDigits: number): ModuleWithProviders<RaboValidatorModule> {
+        return {
+            ngModule: RaboValidatorModule,
+            providers: [
+                RaboStatementValidatorService,
+                {
+                    provide: RABO_BALANCE_VALIDATOR_CONFIG,
+                    useValue: {fractionDigits}
+                },
+                {
+                    provide: RABO_VALIDATOR_PLUGIN_TOKEN,
+                    useClass: RaboBalanceValidatorPlugin,
+                    multi: true,
+                },
+                {
+                    provide: RABO_VALIDATOR_PLUGIN_TOKEN,
+                    useClass: RaboReferenceValidatorPlugin,
+                    multi: true,
+                },
+            ],
+        }
+    }
+}

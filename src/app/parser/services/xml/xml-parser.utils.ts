@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
-import { RaboBalanceModel, RaboReferenceModel, RaboStatementModel, RaboStatementParser } from '@rabo/model';
-import { fromError, RaboError } from '@rabo/utils/error';
-import { readFileToString } from './parser-file.utils';
+import { RaboBalanceModel, RaboReferenceModel, RaboStatementModel } from "@rabo/model";
+import { RaboError } from "@rabo/utils/error";
 
 export function parseStatementRecord(record: Element): RaboStatementModel {
     const refModel = parseReferenceRecord(record);
@@ -51,31 +49,3 @@ export function parseRaboBalanceRecord(record: Element): RaboBalanceModel {
         start: parseNumberByTag(record, 'startBalance'),
     }
 } 
-
-@Injectable({
-    providedIn: 'root'
-})
-export default class RaboXmlStatementParser implements RaboStatementParser {
-   
-    async parse(file: File): Promise<RaboStatementModel[]> {
-        const fileContent = await readFileToString(file);
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(fileContent, 'text/xml');
-        const records = xmlDoc.getElementsByTagName('record');
-        const result: RaboStatementModel[] = [];
-        for (let i = 0; i < records.length; i++) {
-            try {
-                const record = records.item(i);
-                if (record) {
-                    result.push(parseStatementRecord(record));
-                }
-            } catch (error) {
-                // TODO: skip malformed records or reject the whole file?
-               // TODO: log errors in solid way 
-                console.error(fromError(error).raboMsg);
-            }
-        }
-        return result;
-    }
-}
-
