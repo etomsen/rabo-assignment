@@ -19,7 +19,7 @@ export class RaboReferenceValidator implements RaboValidator {
 
     validateRecord(value: RaboReferenceModel, index: number): RaboValidationErrors | null {
         if (this.ids.has(value.reference)) {
-            return {[`reference_${value.reference}`]: `Duplicate transaction reference ${value.reference}`}
+            return {[`reference_${value.reference}`]: 'Duplicate transaction reference'}
         }
         this.ids.add(value.reference);
         return null;

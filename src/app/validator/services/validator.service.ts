@@ -6,7 +6,7 @@ import { RABO_VALIDATOR_PLUGIN_TOKEN } from './validator.token';
 // Record validation result are grouped per reference
 export type RaboValidationResult = {[reference: number]: RaboValidationErrors}; 
 // statement validation result are grouped per errorKey
-export type RaboStatementValidationResult = {[key: string]: {references: Array<number>, error: string}};
+export type RaboStatementValidationResult = {[key: string]: {references: Set<number>, error: string}};
 
 @Injectable()
 export class RaboStatementValidatorService {
@@ -45,9 +45,9 @@ export class RaboStatementValidatorService {
             }
             return Object.keys(recordErrors).reduce((newValidationResult, recordError) => {
                 if (!newValidationResult[recordError]) {
-                    newValidationResult = {...newValidationResult, [recordError]: {references: [], error: recordErrors[recordError]}};
+                    newValidationResult = {...newValidationResult, [recordError]: {references: new Set(), error: recordErrors[recordError]}};
                 }
-                newValidationResult[recordError].references.push(record.reference);
+                newValidationResult[recordError].references.add(record.reference);
                 return newValidationResult;
 
             }, result);
