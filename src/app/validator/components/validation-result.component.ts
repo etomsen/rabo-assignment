@@ -21,6 +21,7 @@ export class RaboValidationResultComponent {
     set statement(value: RaboStatementModel[]) {
         this.state = ngIfLoadingSymbol;
         this.cdRef.markForCheck();
+        // TODO: it would be good to move the validate to web-worker in order not to block the UI
         this.dataSource.data = this.validate(value);
         this.state = value;
         this.cdRef.markForCheck();
@@ -28,10 +29,10 @@ export class RaboValidationResultComponent {
     }
 
     validate(statement: Array<RaboStatementModel>) {
-        const recordValidation = this.service.validateRecords(statement);
+        const recordsValidation = this.service.validateRecords(statement);
         const statementValidation = this.service.validateStatement(statement);
-        const errorsByReference = new Map(Object.keys(recordValidation).map((reference) => {
-            const errors = Object.values(recordValidation[+reference]).join(', ');
+        const errorsByReference = new Map(Object.keys(recordsValidation).map((reference) => {
+            const errors = Object.values(recordsValidation[+reference]).join(', ');
             return [+reference, errors];
         }));
         Object.keys(statementValidation).forEach(errKey => {
