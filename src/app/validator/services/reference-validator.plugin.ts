@@ -18,12 +18,8 @@ export class RaboReferenceValidator implements RaboValidator {
     private readonly ids = new Set<number>;
 
     validateRecord(value: RaboReferenceModel, index: number): RaboValidationErrors | null {
-        const errorKey = `reference_${index}`;
-        if (typeof value.reference!== 'number' || value.reference <= 0) {
-            return {errorKey: `Invalid reference format ${value.reference}`}
-        }
         if (this.ids.has(value.reference)) {
-            return {errorKey: `Duplicate transaction reference ${value.reference}`}
+            return {[`reference_${value.reference}`]: `Duplicate transaction reference ${value.reference}`}
         }
         this.ids.add(value.reference);
         return null;

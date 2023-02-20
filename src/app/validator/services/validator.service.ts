@@ -1,7 +1,12 @@
 import { Injectable, Injector } from '@angular/core';
-import { RaboReferenceModel, RaboStatementModel } from '@rabo/model';
+import { RaboStatementModel } from '@rabo/model';
 import { RaboValidationErrors, RaboValidator, RaboValidatorPlugin } from './validator.plugin';
 import { RABO_VALIDATOR_PLUGIN_TOKEN } from './validator.token';
+
+// Record validation result are grouped per reference
+export type RaboValidationResult = {[reference: number]: RaboValidationErrors}; 
+// statement validation result are grouped per errorKey
+export type RaboStatementValidationResult = {[key: string]: {references: Array<number>, error: string}};
 
 @Injectable()
 export class RaboStatementValidatorService {
@@ -16,22 +21,37 @@ export class RaboStatementValidatorService {
         return this.plugins;
     }
 
-    validateRecords(statement: Array<RaboStatementModel>): Array<RaboReferenceModel & {errors: RaboValidationErrors}> {
+
+    validateRecords(statement: Array<RaboStatementModel>): RaboValidationResult { 
         const recordValidators = this.getPlugins().filter(p => p.isRecordValidator()).map(p => p.getValidator());
-        return statement.map((record, index) => {
+        return statement.reduce((result, record, index) => {
+            const errors = getRecordValidationErrors(recordValidators, record, index);
+            if (!errors) {
+                return result;
+            }
             return {
-                reference: record.reference,
-                errors: getRecordValidationErrors(recordValidators, record, index)
+                ...result,
+                [record.reference]: errors,
             };
-        });
+        }, {});
     }
 
-    validateStatement(statement: Array<RaboStatementModel>): RaboValidationErrors {
+    validateStatement(statement: Array<RaboStatementModel>): RaboStatementValidationResult {
         const statementValidators = this.getPlugins().filter(p => !p.isRecordValidator()).map(p => p.getValidator());
-        return statement.reduce((statementErrors, record, index) => {
+        return statement.reduce((result, record, index) => {
             const recordErrors = getRecordValidationErrors(statementValidators, record, index);
-            return recordErrors ? {...statementErrors, ...recordErrors} : statementErrors;
-        }, {} as RaboValidationErrors);
+            if (!recordErrors) {
+                return result;
+            }
+            return Object.keys(recordErrors).reduce((newValidationResult, recordError) => {
+                if (!newValidationResult[recordError]) {
+                    newValidationResult = {...newValidationResult, [recordError]: {references: [], error: recordErrors[recordError]}};
+                }
+                newValidationResult[recordError].references.push(record.reference);
+                return newValidationResult;
+
+            }, result);
+        }, {} as RaboStatementValidationResult);
     }
 }
 
@@ -39,8 +59,12 @@ export function getRecordValidationErrors(validators: RaboValidator[], record: R
     return validators.reduce((recordErrors, v) => {
         const validatorErrors = v.validateRecord(record, index);
         if (validatorErrors) {
-            recordErrors = { ...recordErrors, ...validatorErrors };
+            if (!recordErrors) {
+                return validatorErrors;
+            } else {
+                return { ...recordErrors, ...validatorErrors };
+            }
         }
         return recordErrors;
-    }, {} as RaboValidationErrors)
+    }, null as RaboValidationErrors | null)
 }

@@ -6,6 +6,13 @@
     <mutation>+5.99</mutation>
     <endBalance>87.88</endBalance>
   </record>
+  <record reference="164702">
+    <accountNumber>NL46ABNA0625805417</accountNumber>
+    <description>Flowers for Rik Dekker</description>
+    <startBalance>81.89</startBalance>
+    <mutation>+5.99</mutation>
+    <endBalance>87.88</endBalance>
+  </record>
   <record reference="189177">
     <accountNumber>NL27SNSB0917829871</accountNumber>
     <description>Subscription for Erik Dekker</description>

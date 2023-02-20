@@ -21,14 +21,14 @@ export function parseStatementRecord(record: Element): RaboStatementModel {
     return {
         ...refModel,
         ...balanceModel,
-        iban: '123',
-        description: '',
+        iban: parseByTag(record, 'accountNumber'),
+        description: parseByTag(record, 'description'),
     };
 }
 
 export function parseReferenceRecord(record: Element): RaboReferenceModel {
     const reference = record.attributes.getNamedItem('reference')?.value;
-    if (!reference || !Number.isInteger(reference)) {
+    if (!reference || Number.isNaN(reference)) {
         throw new RaboError('XmlParserError', 'Record does not have a reference');
     }
     return {
@@ -59,8 +59,8 @@ export function parseNumberByTag(record: Element, tag: string): number {
 export function parseRaboBalanceRecord(record: Element): RaboBalanceModel {
     return {
         mutation: parseNumberByTag(record, 'mutation'),
-        end: parseNumberByTag(record, 'end'),
-        start: parseNumberByTag(record, 'start'),
+        end: parseNumberByTag(record, 'endBalance'),
+        start: parseNumberByTag(record, 'startBalance'),
     }
 } 
 
@@ -82,7 +82,9 @@ export default class RaboXmlStatementParser implements RaboStatementParser {
                     result.push(parseStatementRecord(record));
                 }
             } catch (error) {
-               // skip malformed records 
+                // TODO: skip malformed records or reject the whole file?
+               // TODO: log errors in solid way 
+                console.error(fromError(error).raboMsg);
             }
         }
         return result;

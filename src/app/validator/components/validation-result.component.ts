@@ -13,7 +13,7 @@ type RaboValidationComponentState = RaboStatementModel[] | RaboError | typeof ng
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RaboValidationResultComponent {
-    readonly dataSource = new MatTableDataSource<RaboReferenceModel & {errors: string}>([]);
+    readonly dataSource = new MatTableDataSource<RaboReferenceModel & {errors?: string}>([]);
     readonly columns = ['reference', 'errors'];
     state?: RaboValidationComponentState;
 
@@ -21,11 +21,31 @@ export class RaboValidationResultComponent {
     set statement(value: RaboStatementModel[]) {
         this.state = ngIfLoadingSymbol;
         this.cdRef.markForCheck();
-        const statementErrors = this.service.validateStatement(value);
-        this.dataSource.data = [];
+        this.dataSource.data = this.validate(value);
         this.state = value;
         this.cdRef.markForCheck();
 
+    }
+
+    validate(statement: Array<RaboStatementModel>) {
+        const recordValidation = this.service.validateRecords(statement);
+        const statementValidation = this.service.validateStatement(statement);
+        const errorsByReference = new Map(Object.keys(recordValidation).map((reference) => {
+            const errors = Object.values(recordValidation[+reference]).join(', ');
+            return [+reference, errors];
+        }));
+        Object.keys(statementValidation).forEach(errKey => {
+            statementValidation[errKey].references.forEach(ref => {
+                const errorMsg = statementValidation[errKey].error;
+                if (!errorsByReference.has(ref)) {
+                    errorsByReference.set(ref, errorMsg);
+                } else {
+                    errorsByReference.set(ref, [errorsByReference.get(ref), errorMsg].join(', '));
+                }
+            })
+        });
+        return Array.from(errorsByReference.keys())
+            .map(reference => ({reference, errors: errorsByReference.get(reference)}))
     }
     
     constructor(private cdRef: ChangeDetectorRef, private service: RaboStatementValidatorService) {}
