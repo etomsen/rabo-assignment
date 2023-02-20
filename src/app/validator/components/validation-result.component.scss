@@ -1,0 +1,21 @@
+@import "theme-vars";
+
+:host {
+    display: block;
+    margin-top: 10px;
+}
+
+.header-text {
+    margin-left: 10px;
+}
+
+.success{
+    width: 100%;
+    text-align: center;
+    color: #{$primary-color};
+}
+
+.mat-column-reference {
+    justify-content: left;
+    max-width: 100px;
+}

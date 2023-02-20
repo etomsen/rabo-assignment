@@ -9,7 +9,7 @@
 </ng-template>
   
 <ng-template #dataTpl>
-    <mat-table *ngIf="dataSource.data.length else noDataTpl" [dataSource]="dataSource" multiTemplateDataRows>
+    <mat-table *ngIf="dataSource.data.length else noDataTpl" [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="reference">
             <mat-header-cell *matHeaderCellDef>
                 Reference
@@ -17,9 +17,9 @@
             <mat-cell *matCellDef="let result">{{ result.reference}}</mat-cell>
         </ng-container>
         <ng-container matColumnDef="errors">
-            <mat-header-cell *matHeaderCellDef>
+            <mat-header-cell *matHeaderCellDef class="error-cell">
                 <mat-icon>error</mat-icon>
-                Errors
+                <span class="header-text">Errors</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let result">
                 {{result.errors}}
@@ -32,7 +32,7 @@
 </ng-template>
 
 <ng-template #noDataTpl>
-    <div class="empty">
+    <div class="success">
         All records in statement are correct!
     </div>
 </ng-template>

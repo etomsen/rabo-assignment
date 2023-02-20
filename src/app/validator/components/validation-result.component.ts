@@ -9,6 +9,7 @@ type RaboValidationComponentState = RaboStatementModel[] | RaboError | typeof ng
 
 @Component({
     templateUrl: './validation-result.component.html',
+    styleUrls: ['./validation-result.component.scss'],
     selector: 'rabo-validation-result',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -24,7 +25,6 @@ export class RaboValidationResultComponent {
         // TODO: it would be good to move the validate to web-worker in order not to block the UI
         this.dataSource.data = this.validate(value);
         this.state = value;
-        this.cdRef.markForCheck();
 
     }
 

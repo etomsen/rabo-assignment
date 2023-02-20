@@ -14,8 +14,8 @@ import { RaboValidatorModule } from './validator/validator.module';
     imports: [
         BrowserModule,
         NoopAnimationsModule,
-        RaboValidatorModule.forRoot(2),
-        RaboStatementParserModule.forRoot(2),
+        RaboValidatorModule.forRoot(4),
+        RaboStatementParserModule.forRoot(4),
         RaboUtilsModule
     ],
     providers: [],

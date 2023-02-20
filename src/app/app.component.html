@@ -1,6 +1,11 @@
 <h1>Rabo Statement Check</h1>
 <main>
-    <input type='file' accept=".csv, .xml" (change)="onFileChanged($event)">
+    <label *ngIf="!state" for="nt-file">Select a statement file (XML, CSV)...</label>
+    <input
+        id="statement-file"
+        type='file'
+        accept=".csv,.xml"
+        (change)="onFileChanged($event)">
 </main>
 <ng-container *ngIf="state; then dataTpl or loadingTpl but errorTpl">
 </ng-container>
